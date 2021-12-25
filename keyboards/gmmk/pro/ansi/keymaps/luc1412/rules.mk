@@ -1,0 +1,3 @@
+VIA_ENABLE = yes
+PROGRAMMABLE_BUTTON_ENABLE = yes
+DEBOUNCE_TYPE = sym_defer_pk
