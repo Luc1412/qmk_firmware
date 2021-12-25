@@ -62,12 +62,27 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // clang-format on
 
 #ifdef ENCODER_ENABLE
-bool encoder_update_user(uint8_t index, bool clockwise) {
-    if (clockwise) {
-      tap_code(KC_VOLU);
-    } else {
-      tap_code(KC_VOLD);
+
+    bool encoder_update_user(uint8_t index, bool clockwise) {
+        uint8_t mods_state = get_mods();
+        if (mods_state & MOD_BIT(KC_RSFT) ) { // If you are holding R shift, Page up/dn
+            unregister_mods(MOD_BIT(KC_RSFT));
+            if (clockwise)
+                tap_code16(KC_PGUP);
+            else
+                tap_code16(KC_PGDN);
+            register_mods(MOD_BIT(KC_RSFT));
+        } else if (mods_state & MOD_BIT(KC_LCTL)) {  // if holding Left Ctrl, navigate next/prev word
+            if (clockwise)
+                tap_code16(LCTL(KC_RGHT));
+            else
+                tap_code16(LCTL(KC_LEFT));
+        else  {
+            if (clockwise)
+                tap_code(KC_VOLU);
+            else
+                tap_code(KC_VOLD);     // Otherwise it just changes volume
+        }
+        return true;
     }
-    return true;
-}
 #endif // ENCODER_ENABLE
